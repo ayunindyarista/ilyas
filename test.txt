@@ -1,0 +1,3 @@
+                          <!-- <td class="sorting_1">{{ $pen->KETUA_PENELITI }}</td> -->
+                          <!-- <td class="sorting_1">{{ $pen->NIDN_NIDK_KETUA }}</td> -->
+				<td>{{ $pen->ID_FAKULTAS }}</td>

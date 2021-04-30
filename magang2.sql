@@ -1,0 +1,427 @@
+-- phpMyAdmin SQL Dump
+-- version 5.0.3
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Waktu pembuatan: 30 Apr 2021 pada 16.19
+-- Versi server: 10.4.14-MariaDB
+-- Versi PHP: 7.4.11
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `magang2`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `detail_penelitian`
+--
+
+CREATE TABLE `detail_penelitian` (
+  `ID_PENELITIAN` varchar(25) NOT NULL,
+  `ID_PENELITI` varchar(23) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `detail_penelitian`
+--
+
+INSERT INTO `detail_penelitian` (`ID_PENELITIAN`, `ID_PENELITI`) VALUES
+('PENELITIAN-202104270003', 'PENELITI-202103230001'),
+('PENELITIAN-202104300001', 'PENELITI-202103230001'),
+('PN21043022', 'PENELITI-202103230001'),
+('PN21043023', 'PENELITI-202103230001'),
+('PN21043024', 'PENELITI-202104270001');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `fakultas`
+--
+
+CREATE TABLE `fakultas` (
+  `ID_FAKULTAS` varchar(6) NOT NULL,
+  `NAMA_FAKULTAS` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `fakultas`
+--
+
+INSERT INTO `fakultas` (`ID_FAKULTAS`, `NAMA_FAKULTAS`) VALUES
+('FAK001', 'FAKULTAS KEDOKTERAN'),
+('FAK002', 'FAKULTAS KEDOKTERAN GIGI'),
+('FAK003', 'FAKULTAS HUKUM'),
+('FAK004', 'FAKULTAS EKONOMI DAN BISNIS'),
+('FAK005', 'FAKULTAS FARMASI'),
+('FAK006', 'FAKULTAS KEDOKTERAN HEWAN'),
+('FAK007', 'FAKULTAS ILMU SOSIAL DAN ILMU POLITIK'),
+('FAK008', 'FAKULTAS SAINS DAN TEKNOLOGI'),
+('FAK009', 'FAKULTAS PSIKOLOG'),
+('FAK010', 'FAKULTAS KESEHATAN MASYARAKAT'),
+('FAK011', 'FAKULTAS ILMU BUDAYA'),
+('FAK012', 'FAKULTAS KEPERAWATAN'),
+('FAK013', 'FAKULTAS PERIKANAN DAN KELAUTAN'),
+('FAK014', 'FAKULTAS VOKASI'),
+('FAK015', 'FAKULTAS TEKNOLOGI MAJU DAN MULTIDISIPLIN');
+
+--
+-- Trigger `fakultas`
+--
+DELIMITER $$
+CREATE TRIGGER `auto_id_fakultas` BEFORE INSERT ON `fakultas` FOR EACH ROW BEGIN
+	SELECT SUBSTRING((MAX(`ID_FAKULTAS`)),4,3) INTO @ID FROM fakultas;
+    IF (@ID >= 1) THEN
+    	SET new.ID_FAKULTAS = CONCAT('FAK',LPAD(@ID+1,3,'0'));
+    ELSE
+    	SET new.ID_FAKULTAS = CONCAT('FAK',LPAD(1,3,'0'));
+    END IF;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `luaran_tambahan`
+--
+
+CREATE TABLE `luaran_tambahan` (
+  `ID_LUARAN_TAMBAHAN` varchar(15) NOT NULL,
+  `LUARAN_TAMBAHAN` varchar(100) DEFAULT NULL,
+  `TAHUN_LUARAN_TAMBAHAN` varchar(4) DEFAULT NULL,
+  `TANGGAL_LUARAN_TAMBAHAN` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `luaran_tambahan`
+--
+
+INSERT INTO `luaran_tambahan` (`ID_LUARAN_TAMBAHAN`, `LUARAN_TAMBAHAN`, `TAHUN_LUARAN_TAMBAHAN`, `TANGGAL_LUARAN_TAMBAHAN`) VALUES
+('LTAM20210323001', 'sdfghjgfdzsxcvc', '2021', '2021-03-23'),
+('LTAM20210330001', 'dgdfewq dgdfewq dgdfewq dgdfewq dgdfewq dgdfewq dgdfewq dgdfewq dgdfewq dgdfewq dgdfewq dgdfewq', '2020', '2021-03-30');
+
+--
+-- Trigger `luaran_tambahan`
+--
+DELIMITER $$
+CREATE TRIGGER `auto_id_luarantambahan` BEFORE INSERT ON `luaran_tambahan` FOR EACH ROW BEGIN
+	SELECT COUNT(*) INTO @ID
+    FROM luaran_tambahan
+    WHERE TANGGAL_LUARAN_TAMBAHAN = new.TANGGAL_LUARAN_TAMBAHAN;
+    SET new.ID_LUARAN_TAMBAHAN=CONCAT("LTAM",YEAR(new.TANGGAL_LUARAN_TAMBAHAN),LPAD(MONTH(new.TANGGAL_LUARAN_TAMBAHAN),2,"0"),LPAD(DAY(new.TANGGAL_LUARAN_TAMBAHAN),2,"0"),LPAD(@ID+1,3,'0'));
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `luaran_wajib`
+--
+
+CREATE TABLE `luaran_wajib` (
+  `ID_LUARAN_WAJIB` varchar(15) NOT NULL,
+  `LUARAN_WAJIB` varchar(100) DEFAULT NULL,
+  `TAHUN_LUARAN_WAJIB` varchar(4) DEFAULT NULL,
+  `TANGGAL_LUARAN_WAJIB` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `luaran_wajib`
+--
+
+INSERT INTO `luaran_wajib` (`ID_LUARAN_WAJIB`, `LUARAN_WAJIB`, `TAHUN_LUARAN_WAJIB`, `TANGGAL_LUARAN_WAJIB`) VALUES
+('LWAJ20210323001', 'SDFDGVCX', '2022', '2021-03-23'),
+('LWAJ20210330001', 'dfgfsfgbdfvcs', '2020', '2021-03-30');
+
+--
+-- Trigger `luaran_wajib`
+--
+DELIMITER $$
+CREATE TRIGGER `auto_id_luaranwajib` BEFORE INSERT ON `luaran_wajib` FOR EACH ROW BEGIN
+	SELECT COUNT(*) INTO @ID
+    FROM luaran_wajib
+    WHERE TANGGAL_LUARAN_WAJIB = new.TANGGAL_LUARAN_WAJIB;
+    SET new.ID_LUARAN_WAJIB=CONCAT("LWAJ",YEAR(new.TANGGAL_LUARAN_WAJIB),LPAD(MONTH(new.TANGGAL_LUARAN_WAJIB),2,"0"),LPAD(DAY(new.TANGGAL_LUARAN_WAJIB),2,"0"),LPAD(@ID+1,3,'0'));
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `pendanaan`
+--
+
+CREATE TABLE `pendanaan` (
+  `ID_PENDANAAN` varchar(22) NOT NULL,
+  `TAHUN_PENDANAAN` varchar(4) DEFAULT NULL,
+  `JUMLAH_PENDANAAN` int(11) DEFAULT NULL,
+  `TANGGAL_PENDANAAN` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `pendanaan`
+--
+
+INSERT INTO `pendanaan` (`ID_PENDANAAN`, `TAHUN_PENDANAAN`, `JUMLAH_PENDANAAN`, `TANGGAL_PENDANAAN`) VALUES
+('PENDANAAN-20210325001', '2022', 20000000, '2021-03-25'),
+('PENDANAAN-20210329001', '2021', 1000000, '2021-03-29');
+
+--
+-- Trigger `pendanaan`
+--
+DELIMITER $$
+CREATE TRIGGER `auto_id_pendanaan` BEFORE INSERT ON `pendanaan` FOR EACH ROW BEGIN
+	SELECT COUNT(*) INTO @ID
+    FROM pendanaan
+    WHERE TANGGAL_PENDANAAN = new.TANGGAL_PENDANAAN;
+    SET new.ID_PENDANAAN=CONCAT("PENDANAAN-",YEAR(new.TANGGAL_PENDANAAN),LPAD(MONTH(new.TANGGAL_PENDANAAN),2,"0"),LPAD(DAY(new.TANGGAL_PENDANAAN),2,"0"),LPAD(@ID+1,3,'0'));
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `peneliti`
+--
+
+CREATE TABLE `peneliti` (
+  `ID_PENELITI` varchar(23) NOT NULL,
+  `NAMA_PENELITI` varchar(100) DEFAULT NULL,
+  `STATUS_PENELITI` tinyint(1) DEFAULT NULL,
+  `NIDN_PENELITI` varchar(15) DEFAULT NULL,
+  `TANGGAL_PENELITI` date NOT NULL,
+  `ID_FAKULTAS` varchar(6) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `peneliti`
+--
+
+INSERT INTO `peneliti` (`ID_PENELITI`, `NAMA_PENELITI`, `STATUS_PENELITI`, `NIDN_PENELITI`, `TANGGAL_PENELITI`, `ID_FAKULTAS`) VALUES
+('PENELITI-202103230001', 'brillian syafrizal akbar', 1, '1518115130', '2021-03-23', 'FAK001'),
+('PENELITI-202104270001', 'juwet', NULL, '00999', '2021-04-27', 'FAK005'),
+('PENELITI-202104270002', 'jambu', NULL, '0086985', '2021-04-27', 'FAK006'),
+('PENELITI-202104270003', 'haloo', NULL, '009989', '2021-04-27', 'FAK013'),
+('PENELITI-202104270004', 'Badrus zaman', NULL, '00098978', '2021-04-27', 'FAK006');
+
+--
+-- Trigger `peneliti`
+--
+DELIMITER $$
+CREATE TRIGGER `auto_id_peneliti` BEFORE INSERT ON `peneliti` FOR EACH ROW BEGIN
+	SELECT COUNT(*) INTO @ID
+    FROM peneliti
+    WHERE TANGGAL_PENELITI = new.TANGGAL_PENELITI;
+    SET new.ID_PENELITI=CONCAT("PENELITI-",YEAR(new.TANGGAL_PENELITI),LPAD(MONTH(new.TANGGAL_PENELITI),2,"0"),LPAD(DAY(new.TANGGAL_PENELITI),2,"0"),LPAD(@ID+1,4,'0'));
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `penelitian`
+--
+
+CREATE TABLE `penelitian` (
+  `ID_PENELITIAN` varchar(25) NOT NULL,
+  `ID_LUARAN_TAMBAHAN` varchar(15) DEFAULT NULL,
+  `ID_LUARAN_WAJIB` varchar(15) DEFAULT NULL,
+  `ID_PENDANAAN` varchar(22) DEFAULT NULL,
+  `ID_USER` varchar(7) DEFAULT NULL,
+  `JUDUL_PENELITIAN` text DEFAULT NULL,
+  `SKEMA` varchar(50) DEFAULT NULL,
+  `BIDANG_FOKUS` varchar(50) DEFAULT NULL,
+  `PROGRAM` varchar(50) DEFAULT NULL,
+  `TAHUN_KEGIATAN` varchar(4) DEFAULT NULL,
+  `LAMA_PENELITIAN` varchar(10) DEFAULT NULL,
+  `TANGGAL_PENGAJUAN` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `penelitian`
+--
+
+INSERT INTO `penelitian` (`ID_PENELITIAN`, `ID_LUARAN_TAMBAHAN`, `ID_LUARAN_WAJIB`, `ID_PENDANAAN`, `ID_USER`, `JUDUL_PENELITIAN`, `SKEMA`, `BIDANG_FOKUS`, `PROGRAM`, `TAHUN_KEGIATAN`, `LAMA_PENELITIAN`, `TANGGAL_PENGAJUAN`, `created_at`, `updated_at`) VALUES
+('PENELITIAN-202103300001', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', 'USER001', 'coba coba coba coba coba coba coba', 'PD', 'KESEHATAN', 'BARU', '1', '1', '2021-03-30', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202103300002', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-03-30', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202103300003', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-03-30', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202103300004', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-03-30', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104160001', 'LTAM20210323001', 'LWAJ20210330001', 'PENDANAAN-20210325001', 'USER001', 'cobaa', 'PDUPT', 'Lingkungan', 'Baru', '2021', '3', '2021-04-16', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104160002', 'LTAM20210323001', 'LWAJ20210323001', 'PENDANAAN-20210325001', 'USER001', 'asdasd', 'PDUPT', 'Lingkungan', 'Baru', '2022', '100', '2021-04-16', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104240001', 'LTAM20210323001', 'LWAJ20210323001', 'PENDANAAN-20210329001', 'USER001', 'aku adalah kapiten', 'PDUPT', 'Lingkungan', 'Baru', '2021', '3', '2021-04-24', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270001', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270002', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'asd', 'Kesehatan', 'asd', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270003', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'asd', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270004', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'cobaa cobaa cobaa', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270005', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270006', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270007', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270008', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270009', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270010', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270011', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270012', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104270013', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asasd', 'PUPT', 'Kesehatan', 'baru', '2021', '3', '2021-04-27', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PENELITIAN-202104300001', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, '5tftg', 't5ftftft5f', 'tt5f', 'ygyg', '1', '1', '2021-04-30', '2021-04-30 10:57:09', '2021-04-30 10:57:09'),
+('PN21043022', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'asvdg', 'a', 'a', 'a', '1', 'a', NULL, '2021-04-30 10:57:24', '2021-04-30 10:57:24'),
+('PN21043023', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'q', 'q', 'q', 'q', '2', 'q', NULL, '2021-04-30 10:58:12', '2021-04-30 10:58:12'),
+('PN21043024', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'qw', 'qw', 'qw', 'qw', '21', '12', NULL, '2021-04-30 12:50:46', '2021-04-30 12:50:46'),
+('PN21043025', 'LTAM20210330001', 'LWAJ20210323001', 'PENDANAAN-20210325001', NULL, 'ass', 'ss', 'ss', 'ss', 'ss', 'dcd', NULL, '2021-04-30 13:14:07', '2021-04-30 13:14:07');
+
+--
+-- Trigger `penelitian`
+--
+DELIMITER $$
+CREATE TRIGGER `auto_id_penelitian` BEFORE INSERT ON `penelitian` FOR EACH ROW BEGIN
+    declare nr integer default 0;
+    set nr=(SELECT COUNT(ID_PENELITIAN) from penelitian where DAY(created_at) = DAY(CURRENT_TIMESTAMP) AND MONTH(created_at) = MONTH(CURRENT_TIMESTAMP) AND YEAR(created_at) = YEAR(CURRENT_TIMESTAMP)) + 1;
+    set new.ID_PENELITIAN= concat("PN",RIGHT(YEAR(CURRENT_TIMESTAMP), 2),
+    LPAD(MONTH(CURRENT_TIMESTAMP),2,'0'),
+    LPAD(DAY(CURRENT_TIMESTAMP),2,'0'), LPAD((select nr), 2, '0'));
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `users`
+--
+
+CREATE TABLE `users` (
+  `ID_USER` varchar(7) NOT NULL,
+  `NAMA_USER` varchar(100) DEFAULT NULL,
+  `NO_HP_USER` varchar(13) DEFAULT NULL,
+  `USERNAME` varchar(30) DEFAULT NULL,
+  `PASSWORD` varchar(30) DEFAULT NULL,
+  `BAGIAN_USER` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `users`
+--
+
+INSERT INTO `users` (`ID_USER`, `NAMA_USER`, `NO_HP_USER`, `USERNAME`, `PASSWORD`, `BAGIAN_USER`) VALUES
+('USER001', 'Brillian syafrizal', '0853456789', 'brillian', '12345', 'Admin'),
+('USER002', 'Ilyas', '08976594048', 'ilyas', '12345', 'Admin');
+
+--
+-- Trigger `users`
+--
+DELIMITER $$
+CREATE TRIGGER `auto_id_user` BEFORE INSERT ON `users` FOR EACH ROW BEGIN
+	SELECT SUBSTRING((MAX(`ID_USER`)),5,3) INTO @ID FROM users;
+    IF (@ID >= 1) THEN
+    	SET new.ID_USER = CONCAT('USER',LPAD(@ID+1,3,'0'));
+    ELSE
+    	SET new.ID_USER = CONCAT('USER',LPAD(1,3,'0'));
+    END IF;
+END
+$$
+DELIMITER ;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indeks untuk tabel `detail_penelitian`
+--
+ALTER TABLE `detail_penelitian`
+  ADD PRIMARY KEY (`ID_PENELITIAN`,`ID_PENELITI`),
+  ADD KEY `ID_PENELITI` (`ID_PENELITI`);
+
+--
+-- Indeks untuk tabel `fakultas`
+--
+ALTER TABLE `fakultas`
+  ADD PRIMARY KEY (`ID_FAKULTAS`);
+
+--
+-- Indeks untuk tabel `luaran_tambahan`
+--
+ALTER TABLE `luaran_tambahan`
+  ADD PRIMARY KEY (`ID_LUARAN_TAMBAHAN`);
+
+--
+-- Indeks untuk tabel `luaran_wajib`
+--
+ALTER TABLE `luaran_wajib`
+  ADD PRIMARY KEY (`ID_LUARAN_WAJIB`);
+
+--
+-- Indeks untuk tabel `pendanaan`
+--
+ALTER TABLE `pendanaan`
+  ADD PRIMARY KEY (`ID_PENDANAAN`);
+
+--
+-- Indeks untuk tabel `peneliti`
+--
+ALTER TABLE `peneliti`
+  ADD PRIMARY KEY (`ID_PENELITI`),
+  ADD KEY `FK_FAKULTAS` (`ID_FAKULTAS`);
+
+--
+-- Indeks untuk tabel `penelitian`
+--
+ALTER TABLE `penelitian`
+  ADD PRIMARY KEY (`ID_PENELITIAN`),
+  ADD KEY `ID_LUARAN_TAMBAHAN` (`ID_LUARAN_TAMBAHAN`),
+  ADD KEY `ID_LUARAN_WAJIB` (`ID_LUARAN_WAJIB`),
+  ADD KEY `ID_PENDANAAN` (`ID_PENDANAAN`),
+  ADD KEY `ID_USER` (`ID_USER`);
+
+--
+-- Indeks untuk tabel `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`ID_USER`);
+
+--
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+--
+
+--
+-- Ketidakleluasaan untuk tabel `detail_penelitian`
+--
+ALTER TABLE `detail_penelitian`
+  ADD CONSTRAINT `detail_penelitian_ibfk_1` FOREIGN KEY (`ID_PENELITIAN`) REFERENCES `penelitian` (`ID_PENELITIAN`),
+  ADD CONSTRAINT `detail_penelitian_ibfk_2` FOREIGN KEY (`ID_PENELITI`) REFERENCES `peneliti` (`ID_PENELITI`);
+
+--
+-- Ketidakleluasaan untuk tabel `peneliti`
+--
+ALTER TABLE `peneliti`
+  ADD CONSTRAINT `FK_FAKULTAS` FOREIGN KEY (`ID_FAKULTAS`) REFERENCES `fakultas` (`ID_FAKULTAS`);
+
+--
+-- Ketidakleluasaan untuk tabel `penelitian`
+--
+ALTER TABLE `penelitian`
+  ADD CONSTRAINT `penelitian_ibfk_1` FOREIGN KEY (`ID_LUARAN_TAMBAHAN`) REFERENCES `luaran_tambahan` (`ID_LUARAN_TAMBAHAN`),
+  ADD CONSTRAINT `penelitian_ibfk_2` FOREIGN KEY (`ID_LUARAN_WAJIB`) REFERENCES `luaran_wajib` (`ID_LUARAN_WAJIB`),
+  ADD CONSTRAINT `penelitian_ibfk_3` FOREIGN KEY (`ID_PENDANAAN`) REFERENCES `pendanaan` (`ID_PENDANAAN`),
+  ADD CONSTRAINT `penelitian_ibfk_5` FOREIGN KEY (`ID_USER`) REFERENCES `users` (`ID_USER`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
